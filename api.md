@@ -2,6 +2,8 @@
 
 Packets are exchanged as js objects sent with websockets messages.
 
+Packets can be combined, with the exception of packets with a ``type`` property, witch can only be combined with packets without a ``type`` property.
+
 ## Initialization
 
 Client sends join packet, server responds with init packet.
