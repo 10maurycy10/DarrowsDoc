@@ -1,5 +1,7 @@
 # Darrows API Documentation
 
+Packets are exchanged as js objects sent with websockets messages.
+
 ## Initialization
 
 Client sends join packet, server responds with init packet.
@@ -309,3 +311,35 @@ input: true
 ```
 
 Sends current inputs to server.
+
+## Example code:
+
+The following nodejs code will connect, join, and send a chat message.
+
+It also logs all clientbound packets to console.
+
+```js
+const WebSocket = require('ws');
+const msgpack = require("msgpack-lite")
+
+let url = "wss://darrows.zerotixdev.repl.co/"
+
+let con = new WebSocket(url);
+
+let send = (msg) => con.send(msgpack.encode(msg));
+
+let selfId = null;
+
+con.on('message', (data) => {
+	var obj = msgpack.decode(data)
+	console.log(obj)
+	if (obj.type == "init") {
+		selfId = obj.selfId
+		send({chat: "Custom client test message"})
+	}
+})
+
+con.on('open', () => {
+	send({joinE: true, character: "Default"})
+})
+```
